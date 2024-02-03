@@ -4,8 +4,7 @@ services:
     image: caddy:latest
     restart: always
     ports:
-      - 80:80
-      - 443:443
+      - 80:99999
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./frontend/dist:/var/www:ro

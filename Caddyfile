@@ -1,4 +1,4 @@
-http://scrape-space.chilaxan.cc {
+http://scrape-space.tech {
 	rewrite /api /api/
 	handle_path /api/* {
 		reverse_proxy backend:8080
