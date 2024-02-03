@@ -1,5 +1,4 @@
 http://scrape-space.tech {
-	precompressed br gzip
 	rewrite /api /api/
 	handle_path /api/* {
 		reverse_proxy scrape_space_backend:8080
@@ -8,12 +7,13 @@ http://scrape-space.tech {
 		root * /var/www
 
 		@brotli {
-			file {path}.br
+			file {
+				try_files {path}.br
+			}
 		}
-
 		handle @brotli {
 			header Content-Encoding br
-			rewrite * {http.matchers.file.relative}.br
+			rewrite * {http.matchers.file.relative}
 		}
 		try_files {path} index.html
 		file_server
