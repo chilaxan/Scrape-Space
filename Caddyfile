@@ -5,9 +5,14 @@ http://scrape-space.tech {
 	}
 	handle {
 		root * /var/www
-		try_files {path} index.html
-		file_server {
-			precompressed br
+
+		@brotli {
+			path *.br
 		}
+
+		header @brotli Content-Type br
+
+		try_files {path} index.html
+		file_server
 	}
 }
