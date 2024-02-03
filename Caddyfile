@@ -1,4 +1,5 @@
 http://scrape-space.tech {
+	precompressed br gzip
 	rewrite /api /api/
 	handle_path /api/* {
 		reverse_proxy scrape_space_backend:8080
