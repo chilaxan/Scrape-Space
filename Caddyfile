@@ -1,0 +1,11 @@
+http://scrape-space.chilaxan.cc {
+	rewrite /api /api/
+	handle_path /api/* {
+		reverse_proxy backend:8080
+	}
+	handle {
+		root * /var/www
+		try_files {path} index.html
+		file_server
+	}
+}

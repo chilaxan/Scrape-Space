@@ -1,0 +1,25 @@
+services:
+  caddy:
+    container_name: caddy
+    image: caddy:latest
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./frontend/dist:/var/www:ro
+
+  backend:
+    container_name: backend
+    build: ./backend
+    restart: always
+    expose:
+      - 8080
+
+  mongodb:
+    image: mongodb/mongodb-community-server:6.0-ubi8
+    expose:
+      - 27017
+    volumes:
+      - ./data:/data/db
