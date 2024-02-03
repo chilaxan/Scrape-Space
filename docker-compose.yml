@@ -8,7 +8,7 @@ services:
       - 9999:80
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./frontend/dist:/var/www:ro
+      - ./frontend:/var/www:ro
 
   scrape_space_backend:
     container_name: scrape_space_backend
