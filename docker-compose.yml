@@ -10,7 +10,7 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./frontend/dist:/var/www:ro
 
-  backend:
+  scrape_space_backend:
     container_name: scrape_space_backend
     platform: linux/arm64
     build: ./backend
