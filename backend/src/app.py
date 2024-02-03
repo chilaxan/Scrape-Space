@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import Depends, FastAPI, HTTPException, Request, Response, Cookie, WebSocket
+from fastapi import Depends, FastAPI, HTTPException, Response, Cookie
 from pymongo import DESCENDING
 
 from .database import get_database, ObjectId
@@ -65,7 +65,6 @@ async def downgrade(downgrade_id: str, user = Depends(authentication)):
         users.update_one({'_id': user['_id']}, {"$pull": {'upgrades': downgrade_id}})
     return users.find_one({'_id': user['_id']})
 
-
 @app.get('/leaderboard', response_model=list[schemas.UserNoUpgrades])
 async def leaderboard(skip: int = 0, limit: int = 10):
     users = get_database('users')
@@ -74,17 +73,10 @@ async def leaderboard(skip: int = 0, limit: int = 10):
                     .skip(skip) \
                     .limit(limit))
 
-@app.websocket("/ws")
-async def websocket_endpoint(request: Request, websocket: WebSocket, user = Depends(authentication)):
-    await websocket.accept()
+@app.post('/delta')
+async def delta(amount: int, user = Depends(authentication)):
     users = get_database('users')
-    while True:
-        try:
-            data = await websocket.receive_text()
-            delta = int(data)
-            users.update_one({'_id': user['_id']}, {'$inc': {'score': delta}})
-        except:
-            pass
+    users.update_one({'_id': user['_id']}, {'$inc': {'score': amount}})
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=8080, debug=True)
