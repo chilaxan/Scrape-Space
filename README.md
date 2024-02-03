@@ -1,2 +1,2 @@
 # Scrape-Space
-a space junk cleaning idle ga
+a space junk cleaning idle game
