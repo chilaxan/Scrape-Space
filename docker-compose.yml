@@ -24,4 +24,7 @@ services:
     expose:
       - 27017
     volumes:
-      - ./data:/data/db:Z
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
