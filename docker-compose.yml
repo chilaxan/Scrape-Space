@@ -1,6 +1,7 @@
 services:
   caddy:
     container_name: scrape_space_caddy
+    platform: linux/arm64
     image: caddy:latest
     restart: always
     ports:
@@ -11,13 +12,15 @@ services:
 
   backend:
     container_name: scrape_space_backend
+    platform: linux/arm64
     build: ./backend
     restart: always
     expose:
       - 8080
 
   mongodb:
-    image: mongodb/mongodb-community-server:6.0-ubi8
+    image: mongodb/mongodb-community-server:latest
+    platform: linux/arm64
     expose:
       - 27017
     volumes:
