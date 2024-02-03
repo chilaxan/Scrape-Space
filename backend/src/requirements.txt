@@ -1,2 +1,6 @@
 fastapi[all]
 gunicorn
+pymongo
+websockets
+bcrypt
+pyjwt
