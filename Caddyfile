@@ -5,6 +5,15 @@ http://scrape-space.tech {
 	}
 	handle {
 		root * /var/www
+
+		@brotli {
+			file {path}.br
+		}
+
+		handle @brotli {
+			header Content-Encoding br
+			rewrite * {http.matchers.file.relative}.br
+		}
 		try_files {path} index.html
 		file_server
 	}
