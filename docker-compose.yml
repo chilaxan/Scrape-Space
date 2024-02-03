@@ -1,6 +1,6 @@
 services:
   caddy:
-    container_name: caddy
+    container_name: scrape_space_caddy
     image: caddy:latest
     restart: always
     ports:
@@ -10,7 +10,7 @@ services:
       - ./frontend/dist:/var/www:ro
 
   backend:
-    container_name: backend
+    container_name: scrape_space_backend
     build: ./backend
     restart: always
     expose:
