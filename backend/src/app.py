@@ -16,7 +16,7 @@ def authentication(auth: Annotated[str | None, Cookie()] = None):
             return users.find_one({'_id': ObjectId(data.get('id'))})
     raise HTTPException(status_code=400, detail="Failed To authenticate")
 
-@app.post("/login", response_model=schemas.User)
+@app.post("/login", response_model=schemas.User, tags=['auth'])
 def login(logging_in_user: schemas.UserLogin, response: Response):
     users = get_database('users')
     user = users.find_one({'username': logging_in_user.username})
@@ -25,7 +25,7 @@ def login(logging_in_user: schemas.UserLogin, response: Response):
         return user
     raise HTTPException(status_code=400, detail="Failed To login")
 
-@app.post("/register", response_model=schemas.User)
+@app.post("/register", response_model=schemas.User, tags=['auth'])
 def create_user(user: schemas.UserCreate, response: Response):
     users = get_database('users')
     user.username = user.username.strip()
@@ -43,29 +43,29 @@ def create_user(user: schemas.UserCreate, response: Response):
     response.set_cookie("auth", utils.sign({"id": str(insert_id)}))
     return users.find_one({'_id': insert_id})
 
-@app.post('/logout')
+@app.post('/logout', tags=['auth'])
 def logout(response: Response) -> None:
     response.delete_cookie("auth")
 
-@app.get('/user', response_model=schemas.User)
+@app.get('/user', response_model=schemas.User, tags=['user'])
 async def get_user(user = Depends(authentication)):
     return user
 
-@app.post('/upgrade', response_model=schemas.User)
+@app.post('/upgrade', response_model=schemas.User, tags=['user'])
 async def upgrade(upgrade_id: str, user = Depends(authentication)):
     if upgrade_id not in user['upgrades']:
         users = get_database('users')
         users.update_one({'_id': user['_id']}, {"$push": {'upgrades': upgrade_id}})
     return users.find_one({'_id': user['_id']})
 
-@app.post('/downgrade', response_model=schemas.User)
+@app.post('/downgrade', response_model=schemas.User, tags=['user'])
 async def downgrade(downgrade_id: str, user = Depends(authentication)):
     if downgrade_id in user['upgrades']:
         users = get_database('users')
         users.update_one({'_id': user['_id']}, {"$pull": {'upgrades': downgrade_id}})
     return users.find_one({'_id': user['_id']})
 
-@app.get('/leaderboard', response_model=list[schemas.UserNoUpgrades])
+@app.get('/leaderboard', response_model=list[schemas.UserNoUpgrades], tags=['leaderboard'])
 async def leaderboard(skip: int = 0, limit: int = 10):
     users = get_database('users')
     return list(users.find() \
@@ -73,7 +73,7 @@ async def leaderboard(skip: int = 0, limit: int = 10):
                     .skip(skip) \
                     .limit(limit))
 
-@app.post('/delta')
+@app.post('/delta', tags=['user'])
 async def delta(amount: int, user = Depends(authentication)):
     users = get_database('users')
     users.update_one({'_id': user['_id']}, {'$inc': {'score': amount}})
