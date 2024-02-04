@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 public class ScoreBoardUser {
@@ -5,6 +6,7 @@ public class ScoreBoardUser {
     public int score;
 }
 
+[Serializable]
 public class Board {
     public List<ScoreBoardUser> board;
 }
