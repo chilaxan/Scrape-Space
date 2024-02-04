@@ -1,5 +1,6 @@
 from typing import Annotated
 from fastapi import Depends, FastAPI, HTTPException, Response, Cookie
+from fastapi.responses import PlainTextResponse
 from pymongo import DESCENDING
 
 from .database import get_database, ObjectId
@@ -65,7 +66,7 @@ async def downgrade(downgrade_id: str, user = Depends(authentication)):
         users.update_one({'_id': user['_id']}, {"$pull": {'upgrades': downgrade_id}})
     return users.find_one({'_id': user['_id']})
 
-@app.get('/leaderboard', tags=['leaderboard'])
+@app.get('/leaderboard', response_class=PlainTextResponse, tags=['leaderboard'])
 async def leaderboard(skip: int = 0, limit: int = 10):
     users = get_database('users')
     return '\n'.join(f'{user["username"]}: {user["score"]}' for user in users.find() \
