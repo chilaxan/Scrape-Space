@@ -68,7 +68,7 @@ async def downgrade(downgrade_id: str, user = Depends(authentication)):
 @app.get('/leaderboard', tags=['leaderboard'])
 async def leaderboard(skip: int = 0, limit: int = 10):
     users = get_database('users')
-    return '\n'.join(f'{user.username}: {user.score}' for user in users.find() \
+    return '\n'.join(f'{user["username"]}: {user["score"]}' for user in users.find() \
                     .sort('score', DESCENDING) \
                     .skip(skip) \
                     .limit(limit))
