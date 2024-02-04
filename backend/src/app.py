@@ -27,6 +27,8 @@ def login(logging_in_user: schemas.UserLogin, response: Response):
 
 @app.post("/register", response_model=schemas.User, tags=['auth'])
 def create_user(user: schemas.UserCreate, response: Response):
+    import warnings
+    warnings.warn(str(user.model_dump_json()))
     users = get_database('users')
     user.username = user.username.strip()
     db_user = users.find_one({'username': user.username})
