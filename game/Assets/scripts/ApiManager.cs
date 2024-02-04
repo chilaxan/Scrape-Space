@@ -60,4 +60,56 @@ public class ApiManager
             }
         }
     }
+
+    public static IEnumerable upgrade(string upgrade_id) {
+        using (UnityWebRequest www = UnityWebRequest.Post(API + "upgrade?upgrade_id=" + upgrade_id, "", "application/json")) {
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success) {
+                Debug.Log(www.error);
+            }
+            else {
+                Debug.Log('Added Upgrade');
+            }
+        }
+    }
+
+    public static IEnumerable downgrade(string downgrade_id) {
+        using (UnityWebRequest www = UnityWebRequest.Post(API + "downgrade?downgrade_id=" + downgrade_id, "", "application/json")) {
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success) {
+                Debug.Log(www.error);
+            }
+            else {
+                Debug.Log('Removed Upgrade');
+            }
+        }
+    }
+
+    public static IEnumerable delta(int amount) {
+        using (UnityWebRequest www = UnityWebRequest.Post(API + "delta?amount=" + amount.ToString(), "", "application/json")) {
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success) {
+                Debug.Log(www.error);
+            }
+            else {
+                Debug.Log('Added delta');
+            }
+        }
+    }
+
+    public static IEnumerable leaderboard(int skip, int limit) {
+        using (UnityWebRequest www = UnityWebRequest.Get(API + "leaderboard?skip=" + skip.ToString() + "&limit=" + limit.ToString(), "", "application/json")) {
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success) {
+                Debug.Log(www.error);
+            }
+            else {
+                Debug.Log('Got Leaderboard');
+            }
+        }
+    }
 }
