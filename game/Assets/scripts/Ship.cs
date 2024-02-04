@@ -12,7 +12,7 @@ public class Ship : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        float val = 1 + (GameManager.instance.getShipCapacity() * 0.05f);
+        float val = 0.25f + (GameManager.instance.getShipCapacity() * 0.05f);
         this.transform.localScale = new Vector3(val, val, val);
     }
 

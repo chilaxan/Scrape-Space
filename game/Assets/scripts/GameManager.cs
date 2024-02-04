@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -7,6 +8,8 @@ using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
+    public Board scoreBoard = null;
+    
 
     private void Start() {
         if (instance == null) {
@@ -22,6 +25,7 @@ public class GameManager : MonoBehaviour {
         carrierSpeedCost.text = getScrapSpawnRateCost().ToString();
         carrierCountCost.text = getScrapWorthCost().ToString();
     }
+    
 
     public int totalScrap = 0;
 
@@ -41,6 +45,7 @@ public class GameManager : MonoBehaviour {
     
     public GameObject shipPrefab;
     public GameObject planetContainer;
+    public TextMeshProUGUI leaderboardText;
     
 
     public int getFleetSizePrice() {
@@ -51,7 +56,7 @@ public class GameManager : MonoBehaviour {
     }
     
     public int getShipCapacityPrice() {
-        return (int)(10f * Mathf.Pow(1.05f, shipCapacity));
+        return (int)(10f * Mathf.Pow(1.2f, shipCapacity));
     }
     
     public int getShipSpeedPrice() {
@@ -68,6 +73,7 @@ public class GameManager : MonoBehaviour {
 
     public void addScrap() {
         // TODO: Upgrade that adds more scrap value per scrap.
+        StartCoroutine(ApiManager.delta(1 + getScrapWorth(), _ => {}));
         totalScrap += 1 + getScrapWorth();
     }
     
@@ -140,6 +146,21 @@ public class GameManager : MonoBehaviour {
             scrapWorth += 1;
             carrierCountCost.text = getScrapWorthCost().ToString();
         }
+    }
+    public void getLeaderboard() {
+        StartCoroutine(ApiManager.leaderboard(0, 10, response => {
+            if (response != null) {
+                // Serailize the response into a list of ScoreBoardUser
+                scoreBoard = JsonUtility.FromJson<Board>(response.downloadHandler.text);
+                leaderboardText.text = "";
+                int i = 1;
+                foreach (ScoreBoardUser user in scoreBoard.board) {
+                    leaderboardText.text += i + ". " + user.username + " - " + user.score + "\n";
+                    i++;
+                }
+            }
+            
+        }));
     }
     
 }
