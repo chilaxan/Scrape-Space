@@ -9,6 +9,7 @@ using UnityEngine.Serialization;
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
     public Board scoreBoard = null;
+    private User user = null;
     
 
     private void Start() {
@@ -17,6 +18,13 @@ public class GameManager : MonoBehaviour {
         } else if (instance != this) {
             throw new Exception("GameManager instance already exists");
         }
+        StartCoroutine(ApiManager.user(request => {
+            if (request.result == UnityWebRequest.Result.Success) {
+                user = JsonUtility.FromJson<User>(request.downloadHandler.text);
+                Debug.Log(request.downloadHandler.text);
+                totalScrap = user.score;
+            }
+        }));
 
         // StartCoroutine(ApiManager.register("testaccount", "password"));
         fleetSizeCost.text = getFleetSizePrice().ToString();
@@ -151,13 +159,7 @@ public class GameManager : MonoBehaviour {
         StartCoroutine(ApiManager.leaderboard(0, 10, response => {
             if (response != null) {
                 // Serailize the response into a list of ScoreBoardUser
-                scoreBoard = JsonUtility.FromJson<Board>(response.downloadHandler.text);
-                leaderboardText.text = "";
-                int i = 1;
-                foreach (ScoreBoardUser user in scoreBoard.board) {
-                    leaderboardText.text += i + ". " + user.username + " - " + user.score + "\n";
-                    i++;
-                }
+                leaderboardText.text = response.downloadHandler.text;
             }
             
         }));
