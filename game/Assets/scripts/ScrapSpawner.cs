@@ -12,7 +12,7 @@ public class ScrapSpawner : MonoBehaviour {
     void Update() {
         timeToSpawn -= Time.deltaTime;
         if (timeToSpawn <= 0) {
-            timeToSpawn = SPAWN_TIME;
+            timeToSpawn = SPAWN_TIME / GameManager.instance.getScrapSpawnRate();
             SpawnScrap();
         }
     }

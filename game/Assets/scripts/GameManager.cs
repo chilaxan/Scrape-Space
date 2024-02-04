@@ -3,6 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
@@ -18,8 +19,8 @@ public class GameManager : MonoBehaviour {
         fleetSizeCost.text = getFleetSizePrice().ToString();
         shipCapacityCost.text = getShipCapacityPrice().ToString();
         shipSpeedCost.text = getShipSpeedPrice().ToString();
-        carrierSpeedCost.text = getCarrierSpeedPrice().ToString();
-        carrierCountCost.text = getCarrierCountPrice().ToString();
+        carrierSpeedCost.text = getScrapSpawnRateCost().ToString();
+        carrierCountCost.text = getScrapWorthCost().ToString();
     }
 
     public int totalScrap = 0;
@@ -27,8 +28,8 @@ public class GameManager : MonoBehaviour {
     public int fleetSize = 0;
     public int shipCapacity = 0;
     public int shipSpeed = 0;
-    public int carrierSpeed = 0;
-    public int carrierCount = 0;
+    public int scrapSpawnRate = 0;
+    public int scrapWorth = 0;
 
     public TextMeshProUGUI fleetSizeCost;
     public TextMeshProUGUI shipCapacityCost;
@@ -38,8 +39,14 @@ public class GameManager : MonoBehaviour {
     
     public TextMeshProUGUI currentScrap;
     
+    public GameObject shipPrefab;
+    public GameObject planetContainer;
+    
 
     public int getFleetSizePrice() {
+        if (fleetSize == 0) {
+            return 10;
+        }
         return (int)(100f * Mathf.Pow(1.05f, fleetSize));
     }
     
@@ -51,17 +58,17 @@ public class GameManager : MonoBehaviour {
         return (int)(10f * Mathf.Pow(1.05f, shipSpeed));
     }
     
-    public int getCarrierSpeedPrice() {
-        return (int)(10f * Mathf.Pow(1.05f, carrierSpeed));
+    public int getScrapSpawnRateCost() {
+        return (int)(10f * Mathf.Pow(1.05f, scrapSpawnRate));
     }
     
-    public int getCarrierCountPrice() {
-        return (int)(10000f * Mathf.Pow(1.05f, carrierCount));
+    public int getScrapWorthCost() {
+        return (int)(10000f * Mathf.Pow(1.05f, scrapWorth));
     }
 
     public void addScrap() {
         // TODO: Upgrade that adds more scrap value per scrap.
-        totalScrap += 1;
+        totalScrap += 1 + getScrapWorth();
     }
     
     
@@ -74,6 +81,14 @@ public class GameManager : MonoBehaviour {
     public float getShipSpeedMultiplier() {
         return 1.0f + (shipSpeed * 0.1f);
     }
+    
+    public float getScrapSpawnRate() {
+        return 1 + (scrapSpawnRate * 0.1f);
+    }
+    
+    public int getScrapWorth() {
+        return scrapWorth;
+    }
 
     private void Update() {
         currentScrap.text = totalScrap.ToString() + "kg Scrap";
@@ -85,6 +100,9 @@ public class GameManager : MonoBehaviour {
             totalScrap -= price;
             fleetSize += 1;
             fleetSizeCost.text = getFleetSizePrice().ToString();
+            GameObject ship = Instantiate(shipPrefab, planetContainer.transform, true);
+            ship.transform.position = planetContainer.transform.position;
+
         }
     }
     
@@ -106,21 +124,21 @@ public class GameManager : MonoBehaviour {
         }
     }
     
-    public void tryBuyCarrierSpeed() {
-        int price = getCarrierSpeedPrice();
+    public void tryBuyScrapSpawnRate() {
+        int price = getScrapSpawnRateCost();
         if (totalScrap >= price) {
             totalScrap -= price;
-            carrierSpeed += 1;
-            carrierSpeedCost.text = getCarrierSpeedPrice().ToString();
+            scrapSpawnRate += 1;
+            carrierSpeedCost.text = getScrapSpawnRateCost().ToString();
         }
     }
     
-    public void tryBuyCarrierCount() {
-        int price = getCarrierCountPrice();
+    public void tryBuyScrapWorth() {
+        int price = getScrapWorthCost();
         if (totalScrap >= price) {
             totalScrap -= price;
-            carrierCount += 1;
-            carrierCountCost.text = getCarrierCountPrice().ToString();
+            scrapWorth += 1;
+            carrierCountCost.text = getScrapWorthCost().ToString();
         }
     }
     

@@ -6,15 +6,14 @@ using UnityEngine;
 public class Ship : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
+    void Update() {
+        float val = 1 + (GameManager.instance.getShipCapacity() * 0.05f);
+        this.transform.localScale = new Vector3(val, val, val);
     }
 
     private void OnTriggerEnter(Collider other) {
