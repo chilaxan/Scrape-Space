@@ -18,3 +18,6 @@ class UserNoUpgrades(UserBase):
 
 class User(UserNoUpgrades):
     upgrades: list[str]
+
+class Board(BaseModel):
+    board: list[UserNoUpgrades]

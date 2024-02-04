@@ -65,7 +65,7 @@ async def downgrade(downgrade_id: str, user = Depends(authentication)):
         users.update_one({'_id': user['_id']}, {"$pull": {'upgrades': downgrade_id}})
     return users.find_one({'_id': user['_id']})
 
-@app.get('/leaderboard', tags=['leaderboard'])
+@app.get('/leaderboard', response_model=schemas.Board, tags=['leaderboard'])
 async def leaderboard(skip: int = 0, limit: int = 10):
     users = get_database('users')
     return {'board':list(users.find() \
