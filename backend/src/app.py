@@ -65,13 +65,13 @@ async def downgrade(downgrade_id: str, user = Depends(authentication)):
         users.update_one({'_id': user['_id']}, {"$pull": {'upgrades': downgrade_id}})
     return users.find_one({'_id': user['_id']})
 
-@app.get('/leaderboard', response_model=list[schemas.UserNoUpgrades], tags=['leaderboard'])
+@app.get('/leaderboard', tags=['leaderboard'])
 async def leaderboard(skip: int = 0, limit: int = 10):
     users = get_database('users')
-    return list(users.find() \
+    return {'board':list(users.find() \
                     .sort('score', DESCENDING) \
                     .skip(skip) \
-                    .limit(limit))
+                    .limit(limit))}
 
 @app.post('/delta', tags=['user'])
 async def delta(amount: int, user = Depends(authentication)):
