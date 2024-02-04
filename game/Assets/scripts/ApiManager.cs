@@ -35,4 +35,16 @@ public class ApiManager
         }
     }
     
+    public static IEnumerable logout() {
+        using (UnityWebRequest www = UnityWebRequest.Post(API + "logout", "", "application/json")) {
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success) {
+                Debug.Log(www.error);
+            }
+            else {
+                Debug.Log('Logged Out');
+            }
+        }
+    }
 }
